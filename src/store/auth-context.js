@@ -27,7 +27,7 @@ const retreiveToken = () => {
   }
   return {
     token: storedToken,
-    expirationTime: storedExpirationTime,
+    duration: remainingRetreiveTime,
   };
 };
 export const AuthContextProvider = (props) => {
@@ -55,7 +55,9 @@ export const AuthContextProvider = (props) => {
     logoutTimer = setTimeout(logOutHandler, remainingDuration);
   };
   useEffect(() => {
-    logoutTimer = setTimeout(logOutHandler, tokenData.expirationTime);
+    if(tokenData){
+    logoutTimer = setTimeout(logOutHandler, tokenData.duration);
+    }
   }, [tokenData, logOutHandler]);
 
   const contextValue = {
