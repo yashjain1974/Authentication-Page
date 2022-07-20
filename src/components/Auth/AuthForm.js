@@ -1,9 +1,11 @@
 import { useState, useRef, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
 
 import classes from "./AuthForm.module.css";
 
 const AuthForm = () => {
+  const history = useHistory();
   const [isLogin, setIsLogin] = useState(true);
   const [isweekPassword, setisWeekPassword] = useState(false);
   const [isweekPasswordMes, setisWeekPasswordMes] = useState("");
@@ -27,6 +29,7 @@ const AuthForm = () => {
     })
       .then((res) => {
         setIsLoading(false);
+        history.replace("/");
         if (res.ok) {
           return res.json();
         } else {
