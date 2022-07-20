@@ -13,31 +13,37 @@ const AuthForm = () => {
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
   };
+  let url;
 
-  async function addUserDetail(data) {
-    await fetch(
-      "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDL9-razGo1HMXZYtLVAISUgIb--XsB4YQ",
-      {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    ).then((res) => {
-      setIsLoading(false);
-      if (res.ok) {
-      } else {
-        return res.json().then((data) => {
-          let errorMessage = "Authentication failed";
-          if (data && data.error && data.error.message) {
-            setisWeekPassword(true);
-            errorMessage = data.error.message;
-          }
-          setisWeekPasswordMes(errorMessage);
-        });
-      }
-    });
+  async function fetchUserDetail(data, url) {
+    await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        setIsLoading(false);
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            let errorMessage = "Authentication failed";
+            if (data && data.error && data.error.message) {
+              errorMessage = data.error.message;
+              throw new Error(errorMessage);
+            }
+          });
+        }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        setisWeekPassword(true);
+        setisWeekPasswordMes(err.message);
+      });
   }
 
   const submitHandler = (event) => {
@@ -51,8 +57,13 @@ const AuthForm = () => {
     };
     setIsLoading(true);
     if (isLogin) {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDL9-razGo1HMXZYtLVAISUgIb--XsB4YQ";
+      fetchUserDetail(data, url);
     } else {
-      addUserDetail(data);
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDL9-razGo1HMXZYtLVAISUgIb--XsB4YQ";
+      fetchUserDetail(data, url);
     }
   };
 
