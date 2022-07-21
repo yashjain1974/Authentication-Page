@@ -29,7 +29,7 @@ const AuthForm = () => {
     })
       .then((res) => {
         setIsLoading(false);
-        history.replace("/");
+       
         if (res.ok) {
           return res.json();
         } else {
